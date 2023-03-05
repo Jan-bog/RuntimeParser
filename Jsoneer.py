@@ -20,19 +20,28 @@ def processfile(file):
 
     for entry in parsed:
         try:
+            exceptional = ""
             if entry['length'] <= 0:
                 raise LengthError
             curlen = entry['length']
-            if entry['operation'] in runtimes['total']:
-                runtimes['total'][entry['operation']] += curlen
+            if 'operation' in entry:
+                if entry['operation'] in runtimes['total']:
+                    runtimes['total'][entry['operation']] += curlen
+                else:
+                    runtimes['total'][entry['operation']] = curlen
             else:
-                runtimes['total'][entry['operation']] = curlen
-            if entry['software'] in runtimes['persoftware']:
-                runtimes['persoftware'][entry['software']] += curlen
+                exceptional = "No operation listed"
+            if 'software' in entry:
+                if entry['software'] in runtimes['persoftware']:
+                    runtimes['persoftware'][entry['software']] += curlen
+                else:
+                    runtimes['persoftware'][entry['software']] = curlen
             else:
-                runtimes['persoftware'][entry['software']] = curlen
+                exceptional = "No software listed"
+            if exceptional != "":
+                raise KeyError(exceptional)
         except KeyError as e:
-            print(f"Warning: No operation found in entry! Ignoring entry")
+            print(f"Warning: {exceptional}!")
         except TypeError as e:
             print(f"Warning: Couldn't parse operation's length! Ignoring entry")
         except LengthError as e:
