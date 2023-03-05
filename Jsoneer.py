@@ -4,6 +4,9 @@ import os
 class LengthError(Exception):
     pass
 
+class FileFormatError(Exception):
+    pass
+
 __location__ = os.path.realpath(os.path.join(os.getcwd(), os.path.dirname(__file__)))
 
 def processfile(file):
@@ -56,9 +59,12 @@ def fileretrieval():
         if filename == 'q':
             return None
         else:
-            if '.json' not in filename:
-                filename += '.json'
             try:
+                if '.' in filename:
+                    if filename.split('.')[-1] != 'json':
+                        raise FileFormatError
+                if '.json' not in filename:
+                    filename += '.json'
                 file = open(os.path.join(__location__, filename), 'r')
                 return file
             except FileNotFoundError as e:
@@ -72,6 +78,9 @@ def fileretrieval():
                 continue
             except OSError as e:
                 print (f"Error: {e}")
+                continue
+            except FileFormatError:
+                print(f"Error: Unsupported file format! Please use a .json file")
                 continue
             except Exception as e:
                 print(f"Error: {e}")
