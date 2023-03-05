@@ -20,7 +20,7 @@ def processfile(file):
 
     for entry in parsed:
         try:
-            if entry['length'] < 0:
+            if entry['length'] <= 0:
                 raise LengthError
             curlen = entry['length']
             if entry['operation'] in runtimes['total']:
@@ -36,7 +36,7 @@ def processfile(file):
         except TypeError as e:
             print(f"Warning: Couldn't parse operation's length! Ignoring entry")
         except LengthError as e:
-            print(f"Warning: Operation's length below 0. Ignoring entry. Possible typo!")
+            print(f"Warning: Operation's length listed as 0 or below. Ignoring entry. Possible typo!")
     
     print('\n')
 
@@ -68,7 +68,7 @@ def fileretrieval():
                 file = open(os.path.join(__location__, filename), 'r')
                 return file
             except FileNotFoundError as e:
-                print(f"Error: File {filename} not found! Make sure it's located in the same directory as the program")
+                print(f"Error: File {filename} not found! Make sure it's located in the same directory as the program or use the full path to the file")
                 continue
             except PermissionError as e:
                 print(f"Error: Permission denied to read file {filename}!")
