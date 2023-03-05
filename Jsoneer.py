@@ -6,24 +6,11 @@ class LengthError(Exception):
 
 __location__ = os.path.realpath(os.path.join(os.getcwd(), os.path.dirname(__file__)))
 
-def processfile(filename='p_ex_1_runtime_parsing.json'):
+def processfile(file):
     keys = ['total', 'persoftware']
     runtimes = {key: {} for key in keys}
     
-    try:
-        file = open(os.path.join(__location__, filename), 'r')
-    except FileNotFoundError as e:
-        print(f"Error: File {filename} not found!")
-        return None
-    except PermissionError as e:
-        print(f"Error: Permission denied to read file {filename}!")
-        return None
-    except IsADirectoryError as e:
-        print(f"Error: {filename} is a directory!")
-        return None
-    except OSError as e:
-        print (f"Error: {e}")
-        return None
+    #file = open(os.path.join(__location__, filename), 'r')
 
     data = file.read()
     parsed = json.loads(data)
@@ -63,11 +50,42 @@ def printstats(runtimes):
     print(f"Total runtimes per software:")
     print('\n'.join(persw))
 
+def fileretrieval():
+    while(True):
+        print("Please enter the name of the file you want to process. Enter 'q' to quit")
+        filename = input("File name: ")
+        if filename == 'q':
+            return None
+        else:
+            if '.json' not in filename:
+                filename += '.json'
+            try:
+                file = open(os.path.join(__location__, filename), 'r')
+                return file
+            except FileNotFoundError as e:
+                print(f"Error: File {filename} not found! Make sure it's located in the same directory as the program")
+                continue
+            except PermissionError as e:
+                print(f"Error: Permission denied to read file {filename}!")
+                continue
+            except IsADirectoryError as e:
+                print(f"Error: {filename} is a directory!")
+                continue
+            except OSError as e:
+                print (f"Error: {e}")
+                continue
+            except Exception as e:
+                print(f"Error: {e}")
+                continue
+
 def main():
-    runtimes = processfile()
-    if runtimes is None:
-        print("Couldn't process file! Exiting...")
+    file = fileretrieval()
+    if file is None:
+        print("Program exited by user...")
         return
+    
+    runtimes = processfile(file)
+
     printstats(runtimes)
 
 if __name__ == '__main__':
