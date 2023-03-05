@@ -42,11 +42,10 @@ def processfile(file):
     return runtimes
 
 def printstats(runtimes):
-    perop = [f'  {key}: {value}' for key, value in sorted(runtimes['total'].items(), key=lambda x: x[1])]
-    print(f"Total runtimes per operation:")
-    print('\n'.join(perop))
+    perop = sorted(runtimes['total'].items(), key=lambda x: x[1])[-1]
+    print(f"The longest of all operations:\n  {perop[0]}, with a runtime of {perop[1]}")
     print('\n')
-    persw = [f'  {key}: {value}' for key, value in sorted(runtimes['persoftware'].items(), key=lambda x: x[1])]
+    persw = [f'  {key}: {value}' for key, value in sorted(runtimes['persoftware'].items(), key=lambda x: x[1], reverse=True)]
     print(f"Total runtimes per software:")
     print('\n'.join(persw))
 
